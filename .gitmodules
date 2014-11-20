@@ -1,3 +1,6 @@
 [submodule "app/wordpress"]
 	path = app/wordpress
 	url = git://github.com/WordPress/WordPress
+[submodule "app/content/themes/wp-community"]
+	path = app/content/themes/wp-community
+	url = git@github.com:wpargentina/wp-community.git
