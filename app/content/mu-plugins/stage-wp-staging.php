@@ -42,7 +42,7 @@ if ( class_exists( 'Stage_WP_Plugin' ) ) {
 
 			self::$instance = $this;
 
-			if ( ! defined( 'WP_STAGE' ) || WP_STAGE !== 'local' || ! defined( 'STAGING_DOMAIN' ) ) {
+			if ( ! defined( 'WP_STAGE' ) || ! defined( 'STAGING_DOMAIN' ) ) {
 				return;
 			}
 
