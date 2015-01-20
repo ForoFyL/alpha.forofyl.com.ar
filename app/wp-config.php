@@ -61,7 +61,6 @@ if ( file_exists( $local_config = dirname( __FILE__ ) . '/local-config.php' ) ) 
  */
 define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/content' );
 define( 'WP_CONTENT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/content' );
-
 /**#@+
  * Authentication Unique Keys and Salts.
  *
@@ -108,16 +107,6 @@ define( 'DB_COLLATE', '' );
  * prefix. Only numbers, letters, and underscores please!
  */
 $table_prefix  = 'wp_';
-
-/**
- * WordPress Localized Language, defaults to English.
- *
- * Change this to localize WordPress. A corresponding MO file for the chosen
- * language must be installed to wp-content/languages. For example, install
- * de_DE.mo to WP_CONTENT_DIR/languages and set WPLANG to 'de_DE' to enable
- * German language support.
- */
-define( 'WPLANG', '' );
 
 /**
  * Post revisions.
