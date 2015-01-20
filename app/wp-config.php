@@ -108,6 +108,8 @@ define( 'DB_COLLATE', '' );
  */
 $table_prefix  = 'wp_';
 
+define( 'STAGING_DOMAIN', 'alpha.forofyl.com.ar' );
+
 /**
  * Post revisions.
  *
