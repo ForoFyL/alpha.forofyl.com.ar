@@ -108,6 +108,11 @@ define( 'DB_COLLATE', '' );
  */
 $table_prefix  = 'wp_';
 
+/**
+ * Use a fake staging domain until we reach production.
+ *
+ * @TODO: Change when moving to beta, remove for production.
+ */
 define( 'STAGING_DOMAIN', 'alpha.forofyl.com.ar' );
 
 /**
