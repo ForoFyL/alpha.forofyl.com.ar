@@ -1,39 +1,39 @@
 <?php
 /**
- * Stage WP Bitbucket Connector
+ * Stage WP GitHub Connector
  *
- * Connect the current site with Bitbucket through a POST hook
+ * Connect the current site with GitHub through a webhook
  * and deploy using Stage WP.
  *
  * The user running your web server (usually www-data, apache or httpd)
  * needs to be able to access your repository and deploy user using a
  * public key for this plugin to work as expected.
  *
- * @package   Stage_WP_Bitbucket_Connector
+ * @package   Stage_WP_GitHub_Connector
  * @author    Andrés Villarreal <andrezrv@gmail.com>
  * @license   GPL2
- * @link      http://github.com/andrezrv/stage-wp-bitbucket-connector/
+ * @link      http://github.com/andrezrv/stage-wp-github-connector/
  * @copyright 2015 Andrés Villarreal
  *
  * @wordpress-plugin
- * Plugin name: Stage WP Bitbucket Connector
+ * Plugin name: Stage WP GitHub Connector
  * Plugin URI: http://github.com/andrezrv/stage-wp/
- * Description: Connect the current site with Bitbucket through a POST hook and deploy using Stage WP.
+ * Description: Connect the current site with GitHub through a webhook and deploy using Stage WP.
  * Author: Andrés Villarreal
  * Author URI: http://about.me/andrezrv
  * Version: 1.0.0
  * License: GPL2
  */
 
-if ( ! class_exists( 'Stage_WP_Bitbucket_Connector' ) ) :
+if ( ! class_exists( 'Stage_WP_GitHub_Connector' ) ) :
 /**
- * Class Stage_WP_Bitbucket_Connector
+ * Class Stage_WP_GitHub_Connector
  *
- * Setup connection between this WordPress website and Bitbucket POST hook.
+ * Setup connection between this WordPress website and GitHub POST hook.
  *
  * @since 1.0.0
  */
-final class Stage_WP_Bitbucket_Connector {
+final class Stage_WP_GitHub_Connector {
 	/**
 	 * Internal options for this class.
 	 *
@@ -48,7 +48,7 @@ final class Stage_WP_Bitbucket_Connector {
 	 * @var   string
 	 * @since 1.0.0
 	 */
-	private static $options_id = 'stage_wp_bitbucket_connector_options';
+	private static $options_id = 'stage_wp_github_connector_options';
 
 	/**
 	 * ID used to initialize and retrieve results when interacting with the
@@ -57,7 +57,7 @@ final class Stage_WP_Bitbucket_Connector {
 	 * @var   string
 	 * @since 1.0.0
 	 */
-	private $settings_id = 'stage-wp-bitbucket-connector-settings';
+	private $settings_id = 'stage-wp-github-connector-settings';
 
 	/**
 	 * Text domain for this plugin.
@@ -88,7 +88,7 @@ final class Stage_WP_Bitbucket_Connector {
 	/**
 	 * Make sure this class is instantiated only once.
 	 *
-	 * @return Stage_WP_Bitbucket_Connector Self instance of this class.
+	 * @return Stage_WP_GitHub_Connector Self instance of this class.
 	 * @since  1.0
 	 */
 	final public static function get_instance() {
@@ -230,17 +230,11 @@ final class Stage_WP_Bitbucket_Connector {
 
 		$payload = json_decode( $_REQUEST['payload'], true );
 
-		if ( empty( $payload['commits'] ) ) {
+		if ( empty( $payload['ref'] ) ) {
 			return false;
 		}
 
-		$has_allowed_branch = false;
-		foreach ( $payload['commits'] as $commit ) {
-			if ( $this->options['branch'] == $commit['branch'] ) {
-				$has_allowed_branch = true;
-				break;
-			}
-		}
+		$has_allowed_branch = stripos( $payload['ref'], $this->options['branch'] );
 
 		return $has_allowed_branch;
 	}
@@ -272,10 +266,10 @@ final class Stage_WP_Bitbucket_Connector {
 
 		add_submenu_page(
 			'options-general.php',
-			__( 'Stage WP Bitbucket Connector' ),
+			__( 'Stage WP GitHub Connector' ),
 			__( 'Deployment Settings' ),
 			'manage_options',
-			'stage-wp-bitbucket-connector',
+			'stage-wp-github-connector',
 			array( $this, 'settings_page' )
 		);
 	}
@@ -287,7 +281,7 @@ final class Stage_WP_Bitbucket_Connector {
 	 */
 	public function settings_page() {
 		// Avoid this function from running inside any other action.
-		if ( 'settings_page_stage-wp-bitbucket-connector' != current_action() ) {
+		if ( 'settings_page_stage-wp-github-connector' != current_action() ) {
 			return false;
 		}
 
@@ -300,7 +294,7 @@ final class Stage_WP_Bitbucket_Connector {
 		?>
 		<div class="wrap">
 
-			<h2><?php _e( 'Stage WP Bitbucket Connector Settings '); ?></h2>
+			<h2><?php _e( 'Stage WP GitHub Connector Settings '); ?></h2>
 			<form method="post" action="options.php">
 				<?php settings_fields( $this->settings_id ); ?>
 				<?php do_settings_sections( $this->settings_id ); ?>
@@ -308,19 +302,19 @@ final class Stage_WP_Bitbucket_Connector {
 				<table class="form-table">
 					<tr valign="top">
 						<th scope="row"><?php _e( 'Deployment Key', $this->text_domain ); ?></th>
-						<td><input type="text" name="stage_wp_bitbucket_connector_options[key]" value="<?php echo esc_attr( $options['key'] ); ?>" /></td>
+						<td><input type="text" name="stage_wp_github_connector_options[key]" value="<?php echo esc_attr( $options['key'] ); ?>" /></td>
 					</tr>
 					<tr valign="top">
 						<th scope="row"><?php _e( 'Deployment Branch', $this->text_domain ); ?></th>
-						<td><input type="text" name="stage_wp_bitbucket_connector_options[branch]" value="<?php echo esc_attr( $options['branch'] ); ?>" /></td>
+						<td><input type="text" name="stage_wp_github_connector_options[branch]" value="<?php echo esc_attr( $options['branch'] ); ?>" /></td>
 					</tr>
 					<tr valign="top">
 						<th scope="row"><?php _e( 'Deployment Log File', $this->text_domain ); ?></th>
-						<td><input type="text" name="stage_wp_bitbucket_connector_options[log]" value="<?php echo esc_attr( $options['log'] ); ?>" /></td>
+						<td><input type="text" name="stage_wp_github_connector_options[log]" value="<?php echo esc_attr( $options['log'] ); ?>" /></td>
 					</tr>
 					<tr valign="top">
 						<th scope="row"><?php _e( 'Stage WP Installation Path', $this->text_domain ); ?></th>
-						<td><input type="text" name="stage_wp_bitbucket_connector_options[stage_wp_path]" value="<?php echo esc_attr( $options['stage_wp_path'] ); ?>" /></td>
+						<td><input type="text" name="stage_wp_github_connector_options[stage_wp_path]" value="<?php echo esc_attr( $options['stage_wp_path'] ); ?>" /></td>
 					</tr>
 				</table>
 
@@ -341,7 +335,7 @@ final class Stage_WP_Bitbucket_Connector {
 			return false;
 		}
 
-		register_setting( $this->settings_id, 'stage_wp_bitbucket_connector_options' );
+		register_setting( $this->settings_id, 'stage_wp_github_connector_options' );
 	}
 
 	/**
@@ -373,26 +367,26 @@ final class Stage_WP_Bitbucket_Connector {
 }
 endif;
 
-if ( ! function_exists( 'stage_wp_bitbucket_connector_init' ) ) :
-add_action( 'plugins_loaded', 'stage_wp_bitbucket_connector_init' );
+if ( ! function_exists( 'stage_wp_github_connector_init' ) ) :
+add_action( 'plugins_loaded', 'stage_wp_github_connector_init' );
 /**
- * Initialize Bitbucket connector and deploy when requested.
+ * Initialize GitHub connector and deploy when requested.
  *
  * @since 1.0.0
  */
-function stage_wp_bitbucket_connector_init() {
+function stage_wp_github_connector_init() {
 	// Avoid this function from running inside any other action.
 	if ( 'plugins_loaded' != current_action() ) {
 		return false;
 	}
 
-	global $stage_wp_bitbucket_connector;
+	global $stage_wp_github_connector;
 
-	if ( ! $stage_wp_bitbucket_connector ) {
-		$stage_wp_bitbucket_connector = Stage_WP_Bitbucket_Connector::get_instance();
+	if ( ! $stage_wp_github_connector ) {
+		$stage_wp_github_connector = Stage_WP_GitHub_Connector::get_instance();
 
 		if ( ! empty( $_REQUEST['deploy'] ) ) {
-			$stage_wp_bitbucket_connector->deploy();
+			$stage_wp_github_connector->deploy();
 		}
 	}
 }
