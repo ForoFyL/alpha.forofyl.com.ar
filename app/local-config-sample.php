@@ -11,16 +11,16 @@
 
 // ** MySQL settings - By now you should know were to get this from ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', '%%DB_NAME%%' );
+define( 'DB_NAME', 'forofyl_wp' );
 
 /** MySQL database username */
-define( 'DB_USER', '%%DB_USER%%' );
+define( 'DB_USER', 'root' );
 
 /** MySQL database password */
-define( 'DB_PASSWORD', '%%DB_PASSWORD%%' );
+define( 'DB_PASSWORD', 'root' );
 
 /** MySQL hostname */
-define( 'DB_HOST', '%%DB_HOST%%' ); // Probably 'localhost'
+define( 'DB_HOST', 'localhost' ); // Probably 'localhost'
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
