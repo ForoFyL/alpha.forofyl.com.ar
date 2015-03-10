@@ -1,0 +1,23 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# This file will execute additional processes for the VM customizations
+# defined in Vagrantfile.
+
+config.hostsupdater.remove_on_suspend = true
+config.hostsupdater.aliases = [
+	"alpha.forofyl.com.ar",
+]
+
+# Customize VM
+#
+# Define available memory and number of CPUs here. 64 bit host systems need to
+# set IOAPIC mode to "on" if using more than one CPU, and have virtualization
+# features enabled in the BIOS in order to work correctly. Otherwise, the VM
+# could not start.
+config.vm.provider :virtualbox do |v|
+	v.customize ["modifyvm", :id, "--cpuexecutioncap", "100"]
+	v.customize ["modifyvm", :id, "--memory", "3072"]
+	v.customize ["modifyvm", :id, "--cpus", "4"]
+	v.customize ["modifyvm", :id, "--ioapic", "on"]
+end
