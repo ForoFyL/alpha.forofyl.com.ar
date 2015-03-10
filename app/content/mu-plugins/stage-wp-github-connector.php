@@ -373,7 +373,7 @@ add_action( 'plugins_loaded', 'stage_wp_github_connector_init' );
  */
 function stage_wp_github_connector_init() {
 	// Avoid this function from running inside any other action.
-	if ( 'plugins_loaded' != current_action() ) {
+	if ( 'plugins_loaded' != current_action() || ! is_blog_installed() ) {
 		return false;
 	}
 
